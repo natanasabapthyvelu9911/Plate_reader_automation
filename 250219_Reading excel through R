@@ -1,0 +1,21 @@
+#250219: Plate reader analysis automation - Computing average of the replicates of each samples from a 384 well plate
+
+  install.packages("writexl")
+  install.packages("readxl")
+  library(readxl)
+  library(writexl)
+  
+  # 1. Open the Excel file
+  file_path <-"C:/Users/Sriram/OneDrive/251001_RDemo.xlsx" 
+  
+  # Read the specific range for Sample 1 (F11:G12)
+  sample1_data <- read_excel(file_path, range = "F11:G12", col_names = FALSE)
+  
+  # Convert the tibble to a data frame for easier printing
+  sample1_data <- as.data.frame(sample1_data)
+  
+  # 2. Print all values of Sample 1
+  cat("Values for Sample 1:\n")
+  print(sample1_data) # Displays as a clear table
+  cat("Flattened values for Sample 1:\n")
+  print(as.numeric(unlist(sample1_data))) # Prints values in a single row
