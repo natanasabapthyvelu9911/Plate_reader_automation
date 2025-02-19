@@ -1,4 +1,4 @@
-#250219: Plate reader analysis automation - Computing average of the replicates of each samples from a 384 well plate
+#250219: Plate reader analysis automation - Computing average of the replicates of each samples from a 384 well plate in R
 
   install.packages("writexl")
   install.packages("readxl")
