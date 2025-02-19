@@ -1,0 +1,66 @@
+#250219 - Computingnthe average of the 4 replicates (96 samples) in a 384 well plate
+  library(readxl)
+  library(writexl)
+  library(ggplot2)
+  
+  file_path <-"G:/.shortcut-targets-by-id/18vZ5J8Q67UXgkg8BUclOXvc8zDNpqtku/Data/PlateReader/HiBit/Luminescence Quick Read 2024.07.24 17_34_49.xlsx"
+  
+  # Read the entire data range that includes all samples (F11:AC34)
+  data_matrix <- read_excel(file_path, range = "F11:AC26", col_names = FALSE)
+  data_matrix1 <- read_excel(file_path, range = "AB11:AC26", col_names = FALSE)
+  print(data_matrix)
+  
+  # 2. Define the dimensions of the sample layout
+  num_samples <- 96
+  samples_per_row <- 12  # Number of samples per row
+  replicate_rows <- 2    # Height of each sample's block
+  replicate_cols <- 2    # Width of each sample's block
+  
+  # Initialize a data frame to store all sample values
+  results <- data.frame(Sample_Name = character(), Value_1 = numeric(),
+                        Value_2 = numeric(), Value_3 = numeric(), Value_4 = numeric())
+  sample_averages <- data.frame(Sample_Name = character(), Average = numeric())
+  
+  # Function to calculate and print the average of a sample
+  calculate_and_print_average <- function(sample_name, sample_values) {
+    avg_value <- mean(sample_values, na.rm = TRUE)  # Compute average, ignore NA values
+    print(paste(sample_name, "Values:", paste(sample_values, collapse = ", "), 
+                "| Average:", round(avg_value, 2)))
+    return(avg_value)
+  }
+  
+  # 3. Loop through each sample
+  for (sample_num in 1:num_samples) {
+    # Determine the row and column position of the current sample
+    row_block <- ((sample_num - 1) %/% samples_per_row) * replicate_rows
+    col_block <- ((sample_num - 1) %% samples_per_row) * replicate_cols
+    
+    # Extract the 2x2 block for the current sample
+    replicates <- as.numeric(unlist(data_matrix[(row_block + 1):(row_block + replicate_rows),
+                              (col_block + 1):(col_block + replicate_cols)]))
+    
+   
+    # Flatten the 2x2 matrix into a numeric vector
+    sample_values <- as.numeric(unlist(replicates))
+  
+    # Generate a sample name (e.g., Sample_1, Sample_2, ...)
+    sample_name <- paste("Sample", sample_num, sep = "_")
+    
+    # Calculate and print average using the function
+    avg_value <- calculate_and_print_average(sample_name, replicates)
+    
+    # Append the sample data to the results data frame
+    results <- rbind(results, data.frame(Sample_Name = sample_name,
+                                         Value_1 = sample_values[1],
+                                         Value_2 = sample_values[2],
+                                         Value_3 = sample_values[3],
+                                         Value_4 = sample_values[4]))
+    
+    # Store sample averages
+    sample_averages <- rbind(sample_averages, data.frame(Sample_Name = sample_name, Average = avg_value))
+    
+  
+   print(results)
+   print("Sample averages:")
+   print(sample_averages)
+  }
