@@ -1,4 +1,4 @@
-#250219 - Computingnthe average of the 4 replicates (96 samples) in a 384 well plate
+#250219 - Computingnthe average of the 4 replicates in a 2x2 matrix (96 samples) in a 384 well plate
   library(readxl)
   library(writexl)
   library(ggplot2)
